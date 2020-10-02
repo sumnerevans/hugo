@@ -33,6 +33,9 @@ jobs:
       run: |
         pip install docutils
         rst2html.py --version
+    - name: Install pygments
+      run: |
+        pip install pygments
     - if: matrix.os == 'ubuntu-latest'
       name: Install pandoc on Linux
       run: |
