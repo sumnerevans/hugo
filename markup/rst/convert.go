@@ -82,10 +82,14 @@ func (c *rstConverter) getRstContent(src []byte, ctx converter.DocumentContext) 
 	// handle Windows manually because it doesn't do shebangs
 	if runtime.GOOS == "windows" {
 		pythonBinary, _ := internal.GetPythonBinaryAndExecPath()
-		args := []string{binaryPath, "--leave-comments", "--initial-header-level=2"}
+		args := []string{binaryPath,
+			"--leave-comments", "--initial-header-level=2", "--syntax-highlight=short",
+			"--math-output", "MathJax https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"}
 		result, err = internal.ExternallyRenderContent(c.cfg, ctx, src, pythonBinary, args)
 	} else {
-		args := []string{"--leave-comments", "--initial-header-level=2"}
+		args := []string{
+			"--leave-comments", "--initial-header-level=2", "--syntax-highlight=short",
+			"--math-output", "MathJax https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"}
 		result, err = internal.ExternallyRenderContent(c.cfg, ctx, src, binaryName, args)
 	}
 
