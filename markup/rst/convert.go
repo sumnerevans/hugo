@@ -76,10 +76,14 @@ func (c *rstConverter) getRstContent(src []byte, ctx converter.DocumentContext) 
 	// handle Windows manually because it doesn't do shebangs
 	if runtime.GOOS == "windows" {
 		python := internal.GetPythonExecPath()
-		args := []string{path, "--leave-comments", "--initial-header-level=2"}
+		args := []string{path,
+			"--leave-comments", "--initial-header-level=2", "--syntax-highlight=short",
+			"--math-output", "MathJax https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"}
 		result = internal.ExternallyRenderContent(c.cfg, ctx, src, python, args)
 	} else {
-		args := []string{"--leave-comments", "--initial-header-level=2"}
+		args := []string{
+			"--leave-comments", "--initial-header-level=2", "--syntax-highlight=short",
+			"--math-output", "MathJax https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"}
 		result = internal.ExternallyRenderContent(c.cfg, ctx, src, path, args)
 	}
 	// TODO(bep) check if rst2html has a body only option.
