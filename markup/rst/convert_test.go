@@ -45,3 +45,33 @@ func TestConvert(t *testing.T) {
 	c.Assert(err, qt.IsNil)
 	c.Assert(string(b.Bytes()), qt.Equals, "<div class=\"document\">\n\n\n<p>testContent</p>\n</div>")
 }
+
+func TestConvertMathJax(t *testing.T) {
+	if !Supports() {
+		t.Skip("rst not installed")
+	}
+	c := qt.New(t)
+	p, err := Provider.New(converter.ProviderConfig{Logger: loggers.NewErrorLogger()})
+	c.Assert(err, qt.IsNil)
+	conv, err := p.New(converter.DocumentContext{})
+	c.Assert(err, qt.IsNil)
+	b, err := conv.Convert(converter.RenderContext{Src: []byte(":math:`ax^2 + bx + c = 0`")})
+	c.Assert(err, qt.IsNil)
+	c.Assert(string(b.Bytes()), qt.Equals,
+		"<div class=\"document\">\n\n\n<p><span class=\"math\">\\(ax^2 + bx + c = 0\\)</span></p>\n</div>")
+}
+
+func TestConvertCodeFormatting(t *testing.T) {
+	if !Supports() {
+		t.Skip("rst not installed")
+	}
+	c := qt.New(t)
+	p, err := Provider.New(converter.ProviderConfig{Logger: loggers.NewErrorLogger()})
+	c.Assert(err, qt.IsNil)
+	conv, err := p.New(converter.DocumentContext{})
+	c.Assert(err, qt.IsNil)
+	b, err := conv.Convert(converter.RenderContext{Src: []byte(".. code:: c\n\n   int i = 0;")})
+	c.Assert(err, qt.IsNil)
+	c.Assert(string(b.Bytes()), qt.Equals,
+		"<div class=\"document\">\n\n\n<pre class=\"code c literal-block\">\n<span class=\"kt\">int</span> <span class=\"n\">i</span> <span class=\"o\">=</span> <span class=\"mi\">0</span><span class=\"p\">;</span>\n</pre>\n</div>")
+}
